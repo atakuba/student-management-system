@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    private String generateJwtToken(UserPrincipal userPrincipal) {
+    public String generateJwtToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);
         return JWT.create().withIssuer(MUKATAY).withAudience(MUKATAY_ADMINISTRATION)
                 .withIssuedAt(new Date()).withSubject(userPrincipal.getUsername()).withArrayClaim(AUTHORITIES, claims).withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
