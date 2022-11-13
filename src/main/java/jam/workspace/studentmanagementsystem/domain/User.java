@@ -46,9 +46,9 @@ public class User implements Serializable {
     private Date lastLoginDateDisplay;
     @Column(name = "join_date")
     private Date joinDate;
-    private String[] roles;
+    private String role;
     private String[] authorities;
-    @Column(name = "is_active")
+    @Column(name = "is_enabled")
     private boolean isEnabled;
     @Column(name = "is_not_locked")
     private boolean isNotLocked;
