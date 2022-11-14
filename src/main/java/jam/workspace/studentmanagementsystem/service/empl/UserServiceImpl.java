@@ -7,6 +7,7 @@ import jam.workspace.studentmanagementsystem.exception.EmailExistsException;
 import jam.workspace.studentmanagementsystem.exception.UserNotFoundException;
 import jam.workspace.studentmanagementsystem.exception.UsernameExistsException;
 import jam.workspace.studentmanagementsystem.repository.UserRepository;
+import jam.workspace.studentmanagementsystem.service.EmailService;
 import jam.workspace.studentmanagementsystem.service.LoginAttemptService;
 import jam.workspace.studentmanagementsystem.service.UserService;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -87,6 +89,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setProfileImageUrl(getTemporaryProfileImageUrl());
         userRepository.save(user);
         log.info("Now user password: " + password);
+        emailService.sendNewPasswordEmail(firstName, password, email);
         return user;
     }
 
