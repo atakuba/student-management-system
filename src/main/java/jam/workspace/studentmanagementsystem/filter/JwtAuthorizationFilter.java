@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -46,6 +46,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 List<GrantedAuthority> authorities = jwtTokenProvider.getAuthorities(token);
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorities, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
             } else {
                 SecurityContextHolder.clearContext();
             }

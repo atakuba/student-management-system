@@ -1,5 +1,6 @@
 package jam.workspace.studentmanagementsystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,7 @@ public class User implements Serializable {
     private Date lastLoginDateDisplay;
     @Column(name = "join_date")
     private Date joinDate;
+    @Column(name = "role")
     private String role;
     private String[] authorities;
     @Column(name = "is_enabled")

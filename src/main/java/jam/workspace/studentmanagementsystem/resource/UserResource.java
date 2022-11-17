@@ -66,6 +66,7 @@ public class UserResource extends ExceptionHandling {
         return new ResponseEntity<>(userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail()), OK);
     }
     @PostMapping("add")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<User> addNewUser(@RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName,
                                            @RequestParam("username") String username,
@@ -77,8 +78,9 @@ public class UserResource extends ExceptionHandling {
         return new ResponseEntity<>(userService.addNewUser(firstName, lastName, username, email, role, Boolean.parseBoolean(isEnabled), Boolean.parseBoolean(isNotLocked), profileImage), OK);
     }
 
-    @PostMapping("update")
-    public ResponseEntity<User> updateUser(@RequestParam("currentUser") String currentUser,
+    @PutMapping("update")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
+    public ResponseEntity<User> updateUser(@RequestParam("currentUsername") String currentUsername,
                                            @RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName,
                                            @RequestParam("username") String username,
@@ -86,42 +88,48 @@ public class UserResource extends ExceptionHandling {
                                            @RequestParam("role") String role,
                                            @RequestParam("isEnabled") String isEnabled,
                                            @RequestParam("isNotLocked") String isNotLocked,
-                                           @RequestParam(value = "firstname", required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException {
-        return new ResponseEntity<>(userService.updateUser(currentUser, firstName, lastName, username, email, role, Boolean.parseBoolean(isEnabled), Boolean.parseBoolean(isNotLocked), profileImage), OK);
+                                           @RequestParam(value = "profile-image", required = false) MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException {
+        return new ResponseEntity<>(userService.updateUser(currentUsername, firstName, lastName, username, email, role, Boolean.parseBoolean(isEnabled), Boolean.parseBoolean(isNotLocked), profileImage), OK);
     }
-    @PostMapping("updateProfileImage")
+    @PostMapping("update-profile-image")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<User> updateProfileImage(@RequestParam("username") String username,
-                                           @RequestParam(value = "firstname") MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException {
+                                           @RequestParam(value = "profile-image") MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException {
 
         return new ResponseEntity<>(userService.updateProfileImage(username, profileImage), OK);
     }
     @GetMapping("find/{username}")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<User> getUser(@PathVariable("username") String username) {
         return new ResponseEntity<>(userService.findUserByUsername(username), OK);
     }
     @GetMapping("list")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(userService.getUsers(), OK);
     }
-    @GetMapping("resetPassword/{email}")
+    @GetMapping("reset-password/{email}")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException {
         userService.resetPassword(email);
         return response(OK, EMAIL_SENT + email);
     }
 
     @DeleteMapping("delete/{id}")
-    @PreAuthorize("hasAnyAuthority('user:delete')")
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return response(OK, USER_DELETED_SUCCESSFULLY);
     }
 
     @GetMapping(value = "image/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
+    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("fileName") String fileName) throws IOException {
         return Files.readAllBytes(Paths.get(USER_FOLDER + username + FORWARD_SLASH + fileName));
     }
 
     @GetMapping(path = "image/profile/{username}", produces = IMAGE_JPEG_VALUE)
+//    @PreAuthorize("hasAnyAuthority('user:delete', 'user:read')")
     public byte[] getTempProfileImage(@PathVariable("username") String username) throws MalformedURLException {
         URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + username);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

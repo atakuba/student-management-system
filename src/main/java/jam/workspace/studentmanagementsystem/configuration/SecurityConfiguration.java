@@ -58,8 +58,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("**/").permitAll()
-
+                .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
+//                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)

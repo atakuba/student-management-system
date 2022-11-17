@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.Access;
 import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -50,6 +51,7 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
+        log.error("Access denied exception");
         return createHttpResponse(FORBIDDEN, NOT_ENOUGH_PERMISSION);
     }
 
@@ -84,11 +86,11 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
-        log.error(exception.getMessage());
-        return createHttpResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
+//        log.error(exception.getMessage() + " and here we go");
+//        return createHttpResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
+//    }
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity<HttpResponse> notFoundException(NoResultException exception) {
@@ -98,10 +100,9 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<HttpResponse> iOException(IOException exception) {
-        log.error(exception.getMessage());
+        log.error(exception.getMessage() + " here I am");
         return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
     }
-
 
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message.toUpperCase()), httpStatus);

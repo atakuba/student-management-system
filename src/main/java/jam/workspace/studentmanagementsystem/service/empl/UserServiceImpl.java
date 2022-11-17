@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setLastLoginDate(new Date());
             userRepository.save(user);
             UserPrincipal userPrincipal = new UserPrincipal(user);
-            log.info("Returning found user by username" + username);
+            log.info("Returning found user by username " + username);
             return userPrincipal;
         }
     }
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {
         if (profileImage != null) {
             Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
-            if (Files.exists(userFolder)) {
+            if (!Files.exists(userFolder)) {
                 Files.createDirectories(userFolder);
                 log.info(DIRECTORY_CREATED + userFolder);
             }
@@ -189,14 +189,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             userRepository.save(user);
             log.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }
-    }
-
-    private String setProfileImageUrl(String username) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();
-    }
-
-    private Role getRoleEnumName(String role) {
-        return Role.valueOf(role.toUpperCase());
     }
 
     @Override
@@ -241,4 +233,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         saveProfileImage(user, profileImage);
         return user;
     }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();
+    }
+
+    private Role getRoleEnumName(String role) {
+        return Role.valueOf(role.toUpperCase());
+    }
+
 }
