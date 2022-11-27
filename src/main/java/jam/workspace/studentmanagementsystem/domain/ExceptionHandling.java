@@ -1,9 +1,7 @@
 package jam.workspace.studentmanagementsystem.domain;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import jam.workspace.studentmanagementsystem.exception.EmailExistsException;
-import jam.workspace.studentmanagementsystem.exception.UserNotFoundException;
-import jam.workspace.studentmanagementsystem.exception.UsernameExistsException;
+import jam.workspace.studentmanagementsystem.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpMethod;
@@ -17,9 +15,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.persistence.Access;
 import javax.persistence.NoResultException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.AccessDeniedException;
 import java.util.Objects;
 
@@ -55,6 +53,12 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(FORBIDDEN, NOT_ENOUGH_PERMISSION);
     }
 
+    @ExceptionHandler(NotAnImageFileException.class)
+    public ResponseEntity<HttpResponse> notAnImageFileException(NotAnImageFileException exception) {
+        log.error(exception.getMessage());
+        return createHttpResponse(BAD_REQUEST, exception.getMessage().toUpperCase());
+    }
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<HttpResponse> lockedException() {
         return createHttpResponse(UNAUTHORIZED, ACCOUNT_LOCKED);
@@ -72,6 +76,11 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(UsernameExistsException.class)
     public ResponseEntity<HttpResponse> usernameExistsException(UsernameExistsException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage().toUpperCase());
+    }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage().toUpperCase());
     }
 
@@ -100,7 +109,13 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<HttpResponse> iOException(IOException exception) {
-        log.error(exception.getMessage() + " here I am");
+        log.error(exception.getMessage());
+        return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
+    }
+
+    @ExceptionHandler(MalformedURLException.class)
+    public ResponseEntity<HttpResponse> malformedException(MalformedURLException e) {
+        log.error(e.getMessage());
         return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
     }
 
@@ -110,7 +125,7 @@ public class ExceptionHandling implements ErrorController {
 
     @RequestMapping(ERROR_PATH)
     public ResponseEntity<HttpResponse> notFound404() {
-        return createHttpResponse(NOT_FOUND, "There is not mapping for this URL");
+        return createHttpResponse(NOT_FOUND, "There is no mapping for this URL");
     }
 
     public String getErrorPath() {

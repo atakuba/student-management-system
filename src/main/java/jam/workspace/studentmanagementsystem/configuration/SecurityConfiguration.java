@@ -1,17 +1,13 @@
 package jam.workspace.studentmanagementsystem.configuration;
 
-import jam.workspace.studentmanagementsystem.constant.SecurityConstant;
 import jam.workspace.studentmanagementsystem.filter.JwtAccessDeniedHandler;
 import jam.workspace.studentmanagementsystem.filter.JwtAuthenticationEntryPoint;
 import jam.workspace.studentmanagementsystem.filter.JwtAuthorizationFilter;
-import jam.workspace.studentmanagementsystem.service.empl.UserServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,11 +16,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static jam.workspace.studentmanagementsystem.constant.SecurityConstant.*;
+import static jam.workspace.studentmanagementsystem.constant.SecurityConstant.PUBLIC_URLS;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
@@ -59,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll()
-//                .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)

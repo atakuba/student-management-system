@@ -1,10 +1,7 @@
 package jam.workspace.studentmanagementsystem.filter;
 
-import jam.workspace.studentmanagementsystem.constant.SecurityConstant;
 import jam.workspace.studentmanagementsystem.utility.JwtTokenProvider;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +17,8 @@ import java.util.List;
 
 import static jam.workspace.studentmanagementsystem.constant.SecurityConstant.OPTIONS_HTTP_METHOD;
 import static jam.workspace.studentmanagementsystem.constant.SecurityConstant.TOKEN_PREFIX;
-import static org.springframework.http.HttpHeaders.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.OK;
 
 @Component
 @AllArgsConstructor
