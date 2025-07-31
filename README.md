@@ -1,4 +1,5 @@
 # 👥 User Management System
+<img width="1080" height="1350" alt="USER MANAGEMENT" src="https://github.com/user-attachments/assets/400537d2-d0c0-4dc8-998c-8b5605b22827" />
 
 A full-stack **User Management System** featuring secure JWT-based authentication, role-based access control, dynamic user interface rendering, real-time filtering, and password reset functionality. Built using **Angular** (frontend) and **Spring Boot** (backend).
 
